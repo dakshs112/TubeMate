@@ -25,21 +25,24 @@ const RegisterUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "User with this email or username already exists");
     }
 
-    console.log("Files received:", req.files);
+    //console.log("Files received:", req.files);
 
     if (!req.files?.Avatar?.[0]) {
         throw new ApiError(400, "Avatar file is required");
     }
 
-    if (!req.files?.coverImage?.[0]) {
-        throw new ApiError(400, "Cover image file is required");
-    }
 
     const AvatarLocalPath = req.files.Avatar[0].path;
-    const coverImageLocalPath = req.files.coverImage[0].path;
+    //let coverImageLocalPath = req.files.coverImage[0].path;
+    let coverImageLocalPath
+    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+        coverImageLocalPath = req.files.coverImage[0].path
+    }
 
-    console.log("Avatar path:", AvatarLocalPath);
-    console.log("Cover image path:", coverImageLocalPath);
+
+    if (!AvatarLocalPath) {
+        throw new ApiError(400, "Avatar file is required")
+    }
 
     const Avatar = await UploadOnCloudinary(AvatarLocalPath);
     const coverImage = await UploadOnCloudinary(coverImageLocalPath);
@@ -48,21 +51,21 @@ const RegisterUser = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Failed to upload avatar");
     }
 
-    if (!coverImage) {
-        throw new ApiError(500, "Failed to upload cover image");
-    }
+    // if (!coverImage) {
+    //     throw new ApiError(500, "Failed to upload cover image");
+    // }
 
     // Create user object
     const user = await User.create({
         username: username.toLowerCase(),
         Avatar: Avatar,
-        coverImage: coverImage, 
+        coverImage: coverImage,
         email,
         password,
         FullName,
-    });
+    }); 
 
-    const CreatedUser = await User.findById(user._id).select( // Fixed: was findbyId, changed to findById and user._id instead of User._id
+    const CreatedUser = await User.findById(user._id).select(
         '-password -refreshToken'
     );
 

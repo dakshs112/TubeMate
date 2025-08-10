@@ -1,10 +1,9 @@
-class ApiResponse {
-    constructor(status, data, message = 'Success') { // Fixed parameter order to match usage
+class ApiResponse{
+    constructor(status,message = 'Success', data){
         this.status = status;
-        this.data = data;
         this.message = message;
-        this.success = status < 400; // Fixed variable name from statusCode to status
+        this.data = data;
+        this.success = statusCode <400;
     }
 }
-
-export { ApiResponse };
+export {ApiResponse}

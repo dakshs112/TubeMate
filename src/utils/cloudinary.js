@@ -15,14 +15,12 @@ const UploadOnCloudinary = async (localFilePath) => {
             resource_type: 'auto',
         });
         
-        // Delete the temporary file after successful upload
+        
         fs.unlinkSync(localFilePath);
         
-        // Return the secure_url directly (since controller expects a string)
         return response.secure_url;
         
     } catch (error) {
-        // Delete the temporary file even if upload fails
         try {
             fs.unlinkSync(localFilePath);
         } catch (deleteError) {

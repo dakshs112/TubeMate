@@ -14,4 +14,15 @@ app.use(cookieParser());
 import UserRouter from './routes/user.routes.js';
 app.use('/api/v1/users', UserRouter);
 //http://localhost:3000/api/v1/users/register
+// app.use((err, req, res, next) => {
+//     // If it's our custom ApiError
+//     if (err.statusCode) {
+//         return res.status(err.statusCode).json({
+//             success: false,
+//             message: err.message,
+//             errors: err.errors || [],
+//             data: null
+//         });
+//     }
+// });
 export {app};
