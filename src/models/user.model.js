@@ -28,20 +28,19 @@ const UserSchema = new Schema(
             required: true,
             minlength: 6,
         },
-        fullName: {
+        FullName: {
             type: String,
             required: true,
             trim: true,
             index: true,
         },
-        avatar: {
+        Avatar: {
             type: String,
             required: true,
-            default: 'https://example.com/default-avatar.png',
+            //default: 'https://example.com/default-avatar.png',
         },
         coverImage: {
             type: String,
-            required: true,
         },
         watchHistory: [
             {
@@ -69,7 +68,7 @@ UserSchema.methods.generateAuthToken = function(){
             _id : this._id,
             username: this.username,
             email: this.email,
-            fullName: this.fullName
+            FullName: this.FullName
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
@@ -88,4 +87,4 @@ UserSchema.methods.generateRefreshToken = function(){
         }
     )
 }
-export const User = moongose.model('User', UserSchema)
+export const User = mongoose.model('User', UserSchema)

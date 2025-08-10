@@ -15,11 +15,11 @@ import { ApiResponse } from "../utils/ApiRes.js";
     // return res
 
 const RegisterUser = asyncHandler(async (req, res) => {
-    const { username, email, password, Fullname } = req.body;
+    const { username, email, password, FullName } = req.body;
 
-    console.log(username, email, password, Fullname);
+    console.log(username, email, password, FullName);
 
-    if ([username, email, password, Fullname].some(field => !field || field.trim() === '')) {
+    if ([username, email, password, FullName].some(field => !field || field.trim() === '')) {
         throw new ApiError(400, "All fields are required");
     }
 
@@ -56,10 +56,10 @@ const RegisterUser = asyncHandler(async (req, res) => {
         coverImage: coverImage.url,
         email,
         password,
-        fullName,
+        FullName,
     })
 
-    const CreatedUser = await User.FindbyId(User._id).select(
+    const CreatedUser = await User.findbyId(User._id).select(
         '-password -refreshToken'
     );
 

@@ -41,4 +41,4 @@ const VideoSchema = new Schema({
     collection: 'videos',
 })
 VideoSchema.plugin(aggregatePaginate);
-export const Video = moongoose.model('Video',VideoSchema)
+export const Video = moongoose.model('Video',VideoSchema) 
