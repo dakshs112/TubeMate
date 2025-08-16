@@ -2,6 +2,7 @@ import { Router } from "express";
 import { upload } from "../middleware/Multer.middleware.js";
 import { ApiError } from "../utils/apiError.js";
 import { RegisterUser,LoginUser,LogoutUser } from '../controllers/user.controller.js'
+import { verifyJWT } from "../middleware/auth.middleware.js";
 const router = Router();
 router.route('/register').post(
    upload.fields([
@@ -12,5 +13,5 @@ router.route('/register').post(
    ]),
     RegisterUser);
 router.route('/login').post(LoginUser)
-router.route('/logout').post(LogoutUser);
+router.route('/logout').post(verifyJWT,LogoutUser);
 export default router;

@@ -106,8 +106,10 @@ const RegisterUser = asyncHandler(async (req, res) => {
     //send cookie
 const LoginUser = asyncHandler(async (req, res) => {
     const{email,password,username} = await req.body;
+    console.log(email, password, username);
+    
 
-    if(!email || !username){
+    if(! (email || username) ){
         throw new ApiError(400,"Email or Username is required");
     }
 
@@ -115,7 +117,7 @@ const LoginUser = asyncHandler(async (req, res) => {
         throw new ApiError(400,"Password is required");
     }
 
-    const user = User.findOne({
+    const user = await User.findOne({
         $or :[{email},{username}]
 
     })
@@ -124,7 +126,10 @@ const LoginUser = asyncHandler(async (req, res) => {
         throw new ApiError(404,"User not found");
  
     }
-    const isPasswordValid = await user.isPasswordCorrect(password);
+    const isPasswordValid= await user.isPasswordCorrect(password);
+    if(!isPasswordValid){
+        throw new ApiError(401,"Invalid password");
+    }
     const {refreshToken,accessToken} = await generateAccessAndRefreshTokens(user._id);
     const LoggedInUser = await User.findById(user._id).select(
         '-password -refreshToken'
@@ -148,6 +153,9 @@ const LoginUser = asyncHandler(async (req, res) => {
 
 })
  const LogoutUser = asyncHandler(async (req, res) => {
+    if (!req.user || !req.user._id) {
+        throw new ApiError(401, "User not authenticated");
+    }
     await User.findByIdAndUpdate(req.user._id
         , { $unset: {refreshToken: 1} }
         , { new: true })
@@ -156,12 +164,12 @@ const LoginUser = asyncHandler(async (req, res) => {
         secure:true,
     }
         return res
-        .status(200).clearcookie(accessToken, options)
-        .clearcookie(refreshToken, options)
+        .status(200).clearCookie('accessToken', options)
+        .clearCookie('refreshToken', options)
         .json(new ApiResponse(200, {}, "User logged out successfully"));
  })
 export {
     RegisterUser,
     LoginUser,
-    logoutUser,
+    LogoutUser,
 };
